@@ -25,8 +25,14 @@ const getAuthor = asyncHandler(async(req, res) => {
 // @route GET /api/v1/author
 // @access public
 const getAuthors = asyncHandler(async (req, res) => {
-    const authors = await Author.find({}).sort({firstName: 1}).select('firstName lastName');
-    res.status(200).json(authors)
+
+    const page = +req.query.page || 1
+    const limit = 24
+    const skip = (page - 1) * limit
+
+    const authors = await Author.find({}).sort({firstName: 1})
+    .skip(skip).limit(limit).select('firstName lastName');
+    res.status(200).json({page, authors})
 })
 
 // @desc Create an author

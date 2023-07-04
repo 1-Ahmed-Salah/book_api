@@ -1,9 +1,11 @@
 const express = require('express')
-const dotenv = require('dotenv').config()
-const colors = require('colors')
 const connectDB = require('./config/db')
 const { notFound, errorHandler } = require('./middlewares/errorMiddleware')
-const cookieParser = require('cookie-parser')
+const helmet = require('helmet')
+const cors = require('cors')
+require('dotenv').config()
+require('colors')
+
 
 const port = process.env.PORT || 5000
 
@@ -13,8 +15,14 @@ connectDB()
 const app = express()
 
 //Middleware
+app.use(helmet())
+app.use(cors({
+    origin: `https://localhost:${port}`,
+    
+}))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+
 
 //Routes Application
 app.use('/api/v1/books', require('./routes/bookRoute'))

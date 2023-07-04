@@ -21,10 +21,14 @@ const getBook = asyncHandler(async(req, res) => {
 // @route GET /api/v1/book
 // @access public
 const getBooks = asyncHandler(async (req, res) => {
+    const page =  +req.query.page || 1
+    const limit = 24
+    const skip = (page -1) * limit
+    const books = await Book.find({})
+    .skip(skip).limit(limit)
+    .populate('author', ['_id', 'firstName', 'lastName', 'image'])
 
-    const books = await Book.find({}).populate('author', ['_id', 'firstName', 'lastName', 'image'])
-
-    res.status(200).json(books)
+    res.status(200).json({page, books})
 })
 
 // @desc Create a Book

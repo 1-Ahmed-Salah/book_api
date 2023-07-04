@@ -7,8 +7,14 @@ const bcrypt = require('bcryptjs')
 // @route Get /api/v1/users
 // @access private
 const getAllUsers = asyncHandler(async (req, res) => {
-    const users = await User.find({}).select('-password')
-    res.status(200).json(users)
+
+    const page= +req.query.page || 1
+    const limit = 24
+    const skip = (page - 1) * limit
+
+    const users = await User.find({})
+    .skip(skip).limit(limit).select('-password')
+    res.status(200).json({page, users})
 })
 
 // @desc Get a users
